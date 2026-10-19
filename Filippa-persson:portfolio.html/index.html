@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta name="theme-color" content="#949139">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filippa Persson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  :root { --nav-color: #ECEDE9; }
+
+  /* Navbaren (layout, vikt, aktiv länk) styrs av style.css och är lika på alla sidor. */
+
+
+  /* =====================================================================
+     FÄRGER OCH TYPSNITT
+     ===================================================================== */
+  :root {
+    --bg: #949139;
+    --text: #ECEDE9;
+    --heading-font: "Plus Jakarta Sans", sans-serif;
+    --body-font: "Roboto", sans-serif;
+    --content-left: 7.9vw;   /* vänster/höger marginal för innehållet */
+    --hero-pad: max(var(--content-left), calc((100vw - 140vh) / 2));
+  }
+
+  /* ---------- Global typografi ---------- */
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body-font);
+    font-weight: 400;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18vh var(--hero-pad) 8vh;
+    margin-bottom: 25vh;
+  }
+
+  .hero__photo-wrap {
+    width: 25vw;            /* startvärde, justeras av scriptet */
+    overflow: hidden;
+  }
+
+  .hero__photo {
+    display: block;
+    width: 100%;            /* justeras av scriptet */
+    max-width: none;
+    height: auto;
+  }
+
+  .hero__name {
+    margin: 1.4vh 0 0;
+    font-family: var(--heading-font);
+    font-weight: 600;
+    font-size: 10vw;            /* startvärde, justeras av scriptet */
+    line-height: 0.85;
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: 0;
+    color: var(--text);
+  }
+
+  .hero__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-top: 1.4vh;
+    font-family: var(--body-font);
+    font-weight: 400;
+    font-size: clamp(0.7rem, 1.1vw, 1.05rem);
+    line-height: 1.3;
+  }
+
+  .hero__meta p { margin: 0; }
+  .hero__meta p:last-child { text-align: right; }
+
+  /* ---------- Kontakt ---------- */
+  .hero__contact {
+    position: absolute;
+    right: var(--hero-pad);
+    bottom: -18vh;
+    text-align: right;
+    font-family: var(--body-font);
+    font-weight: 400;
+    font-size: clamp(0.7rem, 1.1vw, 1.05rem);
+    line-height: 1.3;
+  }
+
+  .hero__contact p { margin: 0; }
+  .hero__contact p + p { margin-top: 1.3em; }
+
+  .hero__contact a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .hero__contact a:hover { opacity: 0.6; }
+
+
+  /* ---------- Telefonnummer: klick kopierar numret ---------- */
+  .phone { position: relative; display: inline-block; }
+
+  .phone__btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .phone__btn:hover { opacity: 0.6; }
+
+  .phone__btn:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
+  }
+
+  /* Feedback som visas en kort stund efter kopiering */
+  .phone__toast {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.6em);
+    z-index: 5;
+    padding: 0.45em 1em;
+    background: var(--text);
+    color: #000;
+    text-align: left;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .phone__toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- Mobil ---------- */
+  @media (max-width: 600px) {
+    .hero__meta { flex-direction: column; gap: 0.6rem; }
+    .hero__meta p:last-child { text-align: left; }
+    .hero__contact { position: static; text-align: left; margin-top: 2rem; }
+    .phone__toast { right: auto; left: 0; }
+  }
+
+</style>
+</head>
+<body>
+
+  <nav class="nav" aria-label="Huvudmeny">
+    <a href="index.html" aria-current="page">Home</a>
+    <div class="nav__right">
+      <a href="work.html">Work</a>
+      <a href="about.html">About</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="home">
+    <div class="hero__photo-wrap">
+      <img
+        class="hero__photo"
+        src="Springer.png"
+        alt="Filippa Persson"
+        decoding="async"
+        fetchpriority="high"
+      >
+    </div>
+
+    <h1 class="hero__name" id="heroName">Filippa Persson</h1>
+
+    <div class="hero__meta">
+      <p>Bringing ideas to life through visual design, interaction and<br>creative problem solving.</p>
+      <p>Stockholm, Sweden<br>Interaction Design Student</p>
+    </div>
+
+    <address class="hero__contact" style="font-style: normal;">
+      <p><a href="https://www.linkedin.com/in/persson-filippa" target="_blank" rel="noopener">Linkedin</a></p>
+      <p>
+        <span class="phone">
+          <button class="phone__btn" id="phoneBtn" type="button" title="Klicka för att kopiera" aria-label="Kopiera telefonnumret 072-241 04 44">072-241 04 44</button>
+          <span class="phone__toast" id="phoneToast" role="status" aria-live="polite">Telefonnumret kopierades</span>
+        </span><br>
+        <a href="mailto:filippa.per@gmail.com">filippa.per@gmail.com</a>
+      </p>
+    </address>
+  </header>
+
+
+  <script>
+    const nameEl  = document.getElementById('heroName');
+    const photoEl = document.querySelector('.hero__photo');
+    const wrapEl  = document.querySelector('.hero__photo-wrap');
+    const hero    = document.querySelector('.hero');
+    const ctx     = document.createElement('canvas').getContext('2d');
+
+    let frame = null;
+
+    function findFrame() {
+      const w = photoEl.naturalWidth, h = photoEl.naturalHeight;
+      if (!w || !h) return;
+      try {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const g = c.getContext('2d', { willReadFrequently: true });
+        g.drawImage(photoEl, 0, 0);
+        const d = g.getImageData(0, 0, w, h).data;
+        let x0 = w, y0 = h, x1 = -1, y1 = -1;
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            if (d[(y * w + x) * 4 + 3] > 20) {
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
+          }
+        }
+        if (x1 >= x0 && y1 >= y0) frame = { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+      } catch (e) {
+        frame = null;
+      }
+    }
+
+    function inkOf(text) {
+      const m = ctx.measureText(text);
+      return { left: m.actualBoundingBoxLeft, right: m.actualBoundingBoxRight,
+               width: m.actualBoundingBoxLeft + m.actualBoundingBoxRight };
+    }
+
+    function layoutPhoto(targetW) {
+      const nw = photoEl.naturalWidth, nh = photoEl.naturalHeight;
+      if (!nw || !nh) { wrapEl.style.width = targetW + 'px'; return; }
+      const f = frame || { x: 0, y: 0, w: nw, h: nh };
+      const k = targetW / f.w;
+      photoEl.style.width      = (nw * k) + 'px';
+      photoEl.style.marginLeft = (-f.x * k) + 'px';
+      photoEl.style.marginTop  = (-f.y * k) + 'px';
+      wrapEl.style.width  = targetW + 'px';
+      wrapEl.style.height = (f.h * k) + 'px';
+    }
+
+    function fitName() {
+      const cs = getComputedStyle(hero);
+      const avail = hero.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+
+      const size = 200;
+      ctx.font = `600 ${size}px "Plus Jakarta Sans", sans-serif`;
+
+      const full  = inkOf(nameEl.textContent.trim().toUpperCase());
+      const scale = avail / full.width;
+      nameEl.style.fontSize = (size * scale) + 'px';
+      nameEl.style.marginLeft = (full.left * scale) + 'px';
+
+      layoutPhoto(inkOf('FILI').width * scale);
+    }
+
+    function onPhoto() { findFrame(); fitName(); }
+
+    document.fonts.load('600 100px "Plus Jakarta Sans"').then(fitName);
+    document.fonts.ready.then(fitName);
+    if (photoEl.complete) onPhoto(); else photoEl.addEventListener('load', onPhoto);
+    window.addEventListener('resize', fitName);
+    fitName();
+  </script>
+
+  <script>
+    // Klick på telefonnumret kopierar det och visar en kort bekräftelse
+    (function () {
+      const btn   = document.getElementById('phoneBtn');
+      const toast = document.getElementById('phoneToast');
+      if (!btn || !toast) return;
+      const number = btn.textContent.trim();
+      let timer;
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      function show(msg) {
+        toast.textContent = msg;
+        toast.classList.add('is-visible');
+        clearTimeout(timer);
+        timer = setTimeout(() => toast.classList.remove('is-visible'), 2000);
+      }
+
+      btn.addEventListener('click', async () => {
+        let ok = false;
+        try {
+          await navigator.clipboard.writeText(number);
+          ok = true;
+        } catch (e) {
+          ok = fallbackCopy(number);
+        }
+        show(ok ? 'Telefonnumret kopierades' : 'Kunde inte kopiera, markera numret manuellt');
+      });
+    })();
+  </script>
+
+  <script src="cursor.js"></script>
+
+</body>
+</html>

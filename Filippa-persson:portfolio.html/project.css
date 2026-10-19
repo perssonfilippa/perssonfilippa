@@ -1,0 +1,166 @@
+/* =========================================
+   GEMENSAM STIL FÖR ALLA PROJEKTSIDOR
+   (används av claude-potate.html, get-your-guide.html, hermind.html,
+    sync.html, running.html, dungeon-master.html, andrum.html, micki.html)
+========================================= */
+
+:root {
+  --brown: #815823;      /* samma färg som rutorna på work-sidan */
+  --pj-text: #2a2a24;
+}
+
+.nav {
+  top: 2vh !important;
+  padding: 3vh 5vw !important;
+}
+
+/* Understrykning för den aktiva sidan i navbaren */
+.nav a[aria-current="page"],
+.nav a.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.pj {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;      /* rad 1 = texten, rad 2 = Go back */
+  column-gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 22vh 8vw 10vh;
+}
+
+.pj__text {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.pj__media {
+  grid-column: 2;
+  grid-row: 1 / span 2;      /* bilden sträcker sig över båda raderna */
+}
+
+/* =========================
+   GO BACK (ligger direkt under texten)
+   Pilen ritas här i CSS, så HTML:en bara behöver:
+   <a class="pj__back" href="work.html">Go back</a>
+========================= */
+
+.pj__back {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+  color: var(--brown);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1;
+  text-decoration: none;
+}
+
+/* Pilen: tunn linje i samma färg som texten (byt form genom att ändra SVG:n nedan) */
+.pj__back::before {
+  content: "";
+  flex: none;
+  width: 1.25em;
+  height: 1.25em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M20 12H4M11 5l-7 7 7 7'/></svg>") center / contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M20 12H4M11 5l-7 7 7 7'/></svg>") center / contain no-repeat;
+  transition: transform .25s ease;
+}
+
+.pj__back:hover::before,
+.pj__back:focus-visible::before {
+  transform: translateX(-4px);
+}
+
+.pj__back:focus-visible {
+  outline: 2px solid var(--brown);
+  outline-offset: 6px;
+}
+
+/* =========================
+   TEXT
+========================= */
+
+.pj__year,
+.pj__title {
+  margin: 0;
+  color: var(--brown);
+  font-weight: 400;
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+  line-height: 1.25;
+}
+
+.pj__body {
+  margin-top: 1.4rem;
+}
+
+.pj__body p {
+  margin: 0 0 1.3rem;
+  max-width: 38rem;
+  color: var(--pj-text);
+  font-weight: 300;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.4;
+}
+
+/* =========================
+   BILD
+========================= */
+
+.pj__media {
+  margin: 0;
+}
+
+.pj__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* =========================
+   SMALA SKÄRMAR
+========================= */
+
+@media (max-width: 760px) {
+  .pj {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    row-gap: 2rem;
+    padding: 16vh 6vw 8vh;
+  }
+
+  /* Bild överst, sedan text, sist Go back */
+  .pj__text,
+  .pj__media,
+  .pj__back {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .pj__media {
+    order: -1;
+  }
+
+  .pj__back {
+    order: 1;
+    margin-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pj__back::before { transition: none; }
+}

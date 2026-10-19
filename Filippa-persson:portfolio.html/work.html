@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#815823">
+
+  <title>Work – Filippa Persson</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Lora:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,500&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+  :root { --nav-color: #949139; }
+
+  /* Navbaren (layout, vikt, aktiv länk) styrs av style.css och är lika på alla sidor. */
+
+    :root {
+      --brown: #949139;          /* rutornas färg (grön) */
+      --name-color: #000;        /* Show less */
+      --work-text: #1f1f1a;
+      --title-size: clamp(1.05rem, 1.55vw, 1.45rem);   /* rubrikens storlek */
+      --line-offset: 0.28em;   /* höjer linjen så den ligger i nivå med bokstävernas undre kant (baslinjen) */
+      --line: #000;           /* den tunna linjen i varje rad */
+      --media-gap: clamp(2rem, 5vw, 4.5rem);   /* avstånd mellan bild och text */
+      --media-width: 42%;                       /* bildens bredd (justera här för alla bilder) */
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #ECEDE9;
+    }
+
+    /* =========================
+       LISTA
+    ========================= */
+
+    .work {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 22vh 10vw 10vh;
+    }
+
+    .item + .item {
+      margin-top: clamp(2.5rem, 6vw, 5.5rem);
+    }
+
+    .item {
+      scroll-margin-top: 14vh;
+    }
+
+    /* =========================
+       RAD: år + namn, linje, ruta
+    ========================= */
+
+    .item__row {
+      display: flex;
+      align-items: flex-end;
+      gap: clamp(1rem, 3vw, 2.2rem);
+    }
+
+    .item__meta {
+      flex: none;
+      color: #000;
+      cursor: pointer;                /* namn + år är klickbara */
+      transition: opacity .2s ease;
+    }
+
+    .item__meta:hover {
+      opacity: .7;
+    }
+
+    .item__meta:focus-visible {
+      outline: 2px solid #000;
+      outline-offset: 4px;
+    }
+
+    .item__year,
+    .item__title {
+      margin: 0;
+      color: #000;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    /* Rubrik: större */
+    .item__title {
+      font-size: var(--title-size);
+    }
+
+    /* Årtal: större än förut, men mindre än rubriken */
+    .item__year {
+      font-size: clamp(0.95rem, 1.35vw, 1.3rem);
+    }
+
+    /* Den tunna linjen längs rutans nedre kant */
+    .item__line {
+      flex: 1 1 auto;
+      min-width: 1rem;
+      height: 1px;
+      font-size: var(--title-size);       /* gör att --line-offset (em) följer rubrikens storlek */
+      margin-bottom: var(--line-offset);  /* linjen hamnar i nivå med bokstävernas undre kant */
+      background: var(--line);
+    }
+
+    /* Rutan (klickbar) */
+    .item__square {
+      position: relative;
+      flex: none;
+      width: clamp(4.7rem, 12.8vw, 11rem);
+      aspect-ratio: 1 / 1;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: var(--brown);
+      color: inherit;
+      font: inherit;
+      font-size: var(--title-size);       /* gör att --line-offset (em) följer rubrikens storlek */
+      margin-bottom: var(--line-offset);  /* rutans undre kant ligger på samma höjd som linjen */
+      overflow: visible;
+      cursor: pointer;
+      transition: opacity .2s ease;
+    }
+
+    .item__square:hover {
+      opacity: .85;
+    }
+
+    .item__square:focus-visible {
+      outline: 2px solid var(--work-text);
+      outline-offset: 4px;
+    }
+
+    /* Siffran: uppe till höger, överlappar rutans övre kant */
+    .item__num {
+      position: absolute;
+      top: 0;
+      right: 0.1em;
+      transform: translateY(-50%);
+      color: #000;
+      font-weight: 300;
+      font-size: clamp(1.6rem, 3.5vw, 3.1rem);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* =========================
+       UTFÄLLD BESKRIVNING
+    ========================= */
+
+    .item__detail {
+      display: grid;
+      grid-template-rows: 0fr;
+      visibility: hidden;
+      transition: grid-template-rows .45s ease, visibility 0s linear .45s;
+    }
+
+    .item__detail.is-open {
+      grid-template-rows: 1fr;
+      visibility: visible;
+      transition: grid-template-rows .45s ease, visibility 0s;
+    }
+
+    .item__detail-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Bilden flyter till höger (samma högerkant som rutan),
+       texten radbryter runt den och fortsätter under när den är längre */
+    .project {
+      display: flow-root;            /* omsluter den flytande bilden */
+      padding-top: clamp(1.8rem, 3.5vw, 3rem);
+    }
+
+    .project__media {
+      float: right;
+      width: var(--media-width);
+      margin: 0 0 1.5rem var(--media-gap);
+    }
+
+    .project__media img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .project__text p {
+      margin: 0 0 1.2em;
+      color: var(--work-text);
+      font-weight: 300;
+      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+      line-height: 1.38;
+    }
+
+    .item__less {
+      display: block;
+      margin: calc(2 * 1.38 * clamp(0.9rem, 1.2vw, 1.1rem)) 0 0;   /* ca två textrader under texten */
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--name-color);
+      font: inherit;
+      font-weight: 500;
+      font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+      cursor: pointer;
+    }
+
+    /* Sista stycket ska inte ge extra avstånd, så "Show less" hamnar exakt två rader under */
+    .project__text p:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .item__less:hover {
+      opacity: .6;
+    }
+
+    .item__less:focus-visible {
+      outline: 2px solid var(--name-color);
+      outline-offset: 4px;
+    }
+
+    /* =========================
+       BACK TO TOP BUTTON
+    ========================= */
+
+    .scroll-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--brown);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+      z-index: 1000;
+      padding: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .scroll-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .scroll-to-top:hover {
+      transform: translateY(-3px);
+      opacity: 0.9;
+    }
+
+    .scroll-to-top:focus-visible {
+      outline: 2px solid var(--work-text);
+      outline-offset: 4px;
+    }
+
+    .scroll-to-top svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* =========================
+       HALVSKÄRM: bilden fortsätter flyta till höger,
+       texten radbryter runt den
+    ========================= */
+
+    @media (min-width: 520px) and (max-width: 900px) {
+      :root {
+        --media-width: 45%;      /* bildens bredd, justera här */
+        --media-gap: 1.5rem;     /* avstånd mellan bild och text */
+      }
+
+      .work {
+        padding: 16vh 6vw 8vh;
+      }
+
+      .scroll-to-top {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 42px;
+        height: 42px;
+      }
+    }
+
+    /* =========================
+       MOBIL: bilden överst i full bredd, texten under
+    ========================= */
+
+    @media (max-width: 519px) {
+      .work {
+        padding: 16vh 6vw 8vh;
+      }
+
+      .project__media {
+        float: none;
+        width: 100%;
+        margin: 0 0 1.5rem;
+      }
+
+      .scroll-to-top {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 42px;
+        height: 42px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .item__detail,
+      .item__detail.is-open,
+      .item__square,
+      .scroll-to-top { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       NAVIGATION
+  ========================= -->
+
+  <nav class="nav" aria-label="Huvudmeny">
+    <a href="index.html">Home</a>
+
+    <div class="nav__right">
+      <a href="work.html" aria-current="page">Work</a>
+      <a href="about.html">About</a>
+    </div>
+  </nav>
+
+
+  <!-- =========================
+       WORK
+  ========================= -->
+
+  <main class="work">
+
+    <!-- 01 CLAUDE POTATE -->
+    <article class="item" id="claude-potate">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2026</p>
+          <h2 class="item__title">Claude Potate</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="claude-potate-detail" aria-label="Claude Potate, visa beskrivning">
+          <span class="item__num">01</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="claude-potate-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="ClaudePotate.png?v=2" alt="Claude Potate">
+            </figure>
+            <div class="project__text">
+              <p>
+                A group project where we designed a business card and logo for
+                the company Claude Potate. The challenge was to communicate the
+                brand’s identity only through the visual expression, without
+                directly writing out the profession or type of business.
+              </p>
+              <p>
+                We worked with a dark color palette, high contrast and texture
+                to create an exclusive and well-thought-out feeling. Through a
+                clear typographic hierarchy, the logo is the main focus while
+                the contact information has a more secondary role. To create
+                symmetry and visual balance, the elements were centered. We
+                also worked with visual symbolism, where the C and P look
+                like they are “one”, connected by the thin line between them.
+              </p>
+              <p>
+                The final result was a consistent and modern visual identity
+                for Claude Potate, which is actually a manufacturer of exclusive
+                sofas.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 02 REBRANDING (GET YOUR GUIDE) -->
+    <article class="item" id="get-your-guide">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2026</p>
+          <h2 class="item__title">Rebranding</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="get-your-guide-detail" aria-label="Rebranding, visa beskrivning">
+          <span class="item__num">02</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="get-your-guide-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="GetYourGuide.png" alt="Rebranding av Get Your Guide">
+            </figure>
+            <div class="project__text">
+              <p>
+                A group project where the focus was to explore the possibilities
+                and limitations of colors and images.
+              </p>
+              <p>
+                Starting from a platform of our choice, we chose to redesign
+                GetYourGuide by only updating the color palette and visual style
+                of the images to make it feel more inspiring and personal, without
+                changing the layout or typography. The colors were chosen to
+                inspire people to travel while also creating a harmonious
+                experience for the user. We combined light blue and orange,
+                where blue contributes to a feeling of safety and trust, while
+                orange adds creativity and encouragement according to color
+                psychology.
+              </p>
+              <p>
+                For the visual style, we replaced well-edited advertising photos
+                with more authentic and realistic images that users could have
+                taken themselves. This makes the experience more relatable and shows
+                what the destinations actually look like in real life.
+              </p>
+              <p>
+                The final result was a visual improvement that replaces stiff
+                advertising images with real travel inspiration, where color and
+                images work together to create curiosity and engagement for the user.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 03 HERMIND -->
+    <article class="item" id="hermind">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2026</p>
+          <h2 class="item__title">herMIND</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="hermind-detail" aria-label="herMIND, visa beskrivning">
+          <span class="item__num">03</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="hermind-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="HerMIND.png" alt="herMIND">
+            </figure>
+            <div class="project__text">
+              <p>
+                A project within the course Participatory Design, based on the UN Sustainable Development Goals. As a group, we chose to focus on 3.4 (Ensure healthy lives and promote well-being for all at all ages) and 5.6 (Ensure universal access to sexual and reproductive health).
+              </p>
+              <p>
+                Together with a participant group consisting of young women, we identified a clear lack of reliable and collected information about women’s mental health in a digital environment filled with uncertain information and paywalls. Together with the participants, we explored the need for a digital solution that is not based on the menstrual cycle, making it more inclusive for women who use contraceptives.
+              </p>
+              <p>
+                Through a series of workshops and prototype tests, we developed the app prototype herMIND. The app combines science-based information with a mood tracker, statistics and a safe forum for sharing experiences. It was designed with a warm color palette to create a feeling of safety and comfort. The result was a concrete and interactive prototype that addresses an identified gap in the market without commercial barriers.
+              </p>
+              <p>
+                The project also highlights the design decisions and trade-offs that can occur in participatory design when the user's wishes need to be balanced with the long-term usability of the system.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 04 SYNC -->
+    <article class="item" id="sync">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2026</p>
+          <h2 class="item__title">Sync</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="sync-detail" aria-label="Sync, visa beskrivning">
+          <span class="item__num">04</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="sync-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="Sync.png" alt="Sync">
+            </figure>
+            <div class="project__text">
+              <p>
+                To make digital meetings a more engaging and realistic alternative to short business trips, we developed the prototype for the service Sync. The solution aims to reduce the mental fatigue and cognitive load that often occur during video meetings by increasing engagement and supporting the social interaction within the group.
+              </p>
+              <p>
+                The center of the service is an AI facilitator that analyzes the flow of the conversation in real time to detect when the energy is dropping or when the discussion gets stuck. Instead of taking over the meeting, the AI acts as a supportive tool that gives suggestions, such as starting a poll, creating smaller discussion groups, or reminding the group to take a much-needed coffee break. The interface is also designed to involve the users more actively. To create a sense of safety and trust, the service was designed based on ethical guidelines with a focus on transparency and privacy. The participants always have the final say and remain in control of all suggestions.
+              </p>
+              <p>
+                The result was an ethically grounded meeting concept where AI supports human interaction in the background. This creates more engaging digital meetings while also contributing to Stockholm’s climate goals.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 05 50K -->
+    <article class="item" id="running">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2025</p>
+          <h2 class="item__title">50K</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="running-detail" aria-label="50K, visa beskrivning">
+          <span class="item__num">05</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="running-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="50kRunning.png" alt="50K">
+            </figure>
+            <div class="project__text">
+              <p>
+                A personal design project created to celebrate a person’s achievement of planning and completing a 50-kilometer race. The idea was to create a visual alternative to a traditional medal in the form of a clean and simple poster.
+              </p>
+              <p>
+                Starting from an existing template, the design was developed into a new version and adapted to the runner. The actual route profile was used as a central element of the design, giving the poster a unique and personal touch.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 06 DUNGEON MASTER -->
+    <article class="item" id="dungeon-master">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2025</p>
+          <h2 class="item__title">Dungeon Master</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="dungeon-master-detail" aria-label="Dungeon Master, visa beskrivning">
+          <span class="item__num">06</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="dungeon-master-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="DungeonMaster.png" alt="Dungeon Master">
+            </figure>
+            <div class="project__text">
+              <p>
+                A design created during a lab in the course Human–AI Interaction Design, focusing on designing an interface where AI acts as an active collaborator. The task was to create an AI-powered Game Master for Dungeons &amp; Dragons, with the goal of making it easy and fun for the user to play together with the AI.
+              </p>
+              <p>
+                Based on research about the game and its visual style, the entire chat interface was designed from scratch. The AI was set up to respond in an exciting and engaging way. To help the player, suggestions were added to the chat field to show what they could write. It was also made easy to ask for a new response if the player was not happy with the AI’s suggestion.
+              </p>
+              <p>
+                The result was an interactive prototype where the player and AI create a story together in real time, through an interface that is easy to understand and control.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 07 ANDRUM -->
+    <article class="item" id="andrum">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2025</p>
+          <h2 class="item__title">ANDRUM</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="andrum-detail" aria-label="ANDRUM, visa beskrivning">
+          <span class="item__num">07</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="andrum-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="Andrum.png" alt="Andrum">
+            </figure>
+            <div class="project__text">
+              <p>
+                A project that started in the course User Studies in Interaction Design which focuses on the need for recovery in a busy society. The project was carried out as a fictional collaboration with Skanska and the City of Stockholm. Based on Value Sensitive Design (VSD), interviews were conducted with professionals and students around Humlegården. The study showed that although many people value peace and quiet, they find it difficult to prioritize breaks in a busy everyday life filled with work or studies. Fresh air, movement and music were identified as important parts of relaxation. These insights led to the idea of creating an inviting park bench for spontaneous breaks.
+              </p>
+              <p>
+                The concept was then developed into a physical and digital prototype as part of the course Prototyping in Interaction Design II. The physical bench combines steel and wood with features that support accessibility and safety. The prototype also includes Arduino-controlled lighting and a SwiftUI app with weather data.
+              </p>
+              <p>
+                The final result was a complete design system that invites people to slow down, recharge and reconnect with their surroundings in an urban environment, based on the needs and wishes of the users.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 08 MICKI GLASSBIL -->
+    <article class="item" id="micki">
+      <div class="item__row">
+        <div class="item__meta">
+          <p class="item__year">2022</p>
+          <h2 class="item__title">Micki Glassbil</h2>
+        </div>
+        <span class="item__line" aria-hidden="true"></span>
+        <button class="item__square" type="button" aria-expanded="false" aria-controls="micki-detail" aria-label="Micki Glassbil, visa beskrivning">
+          <span class="item__num">08</span>
+        </button>
+      </div>
+
+      <div class="item__detail" id="micki-detail">
+        <div class="item__detail-inner">
+          <div class="project">
+            <figure class="project__media">
+              <img src="MickiGlassbil.png" alt="Micki Glassbil">
+            </figure>
+            <div class="project__text">
+              <p>
+                The project was carried out as a product development project in a fictional collaboration with the toy manufacturer Micki Leksaker. The starting point was Micki's long tradition of manufacturing wooden toys that encourage playful learning and creativity. The challenge was to create a new product concept that preserves the company's classic craftsmanship, while meeting today's demands for sustainable material choices, educational value and modern children. The purpose was to combine an aesthetic design with a functional and safe construction.
+              </p>
+              <p>
+                To reach the concept, an iterative design process was applied. The work began with a pilot study and target audience analysis to map trends and user needs. Based on these insights, a specification of requirements was established that took safety standards, material choices and manufacturing conditions into account. This was followed by idea generation and sketching where different concepts were explored. Finally, the most promising idea was modeled in the 3D-CAD tool Inventor.
+              </p>
+              <p>
+                The work resulted in a well-developed toy concept adapted for Micki's product range, where the final result was presented through a polystyrene foam prototype in a 1:1 scale, along with technical documentation consisting of CAD models, drawings, and material specifications. The product meets high standards for both manufacturability and safety, while offering children an engaging play experience.
+              </p>
+              <button class="item__less" type="button">Show less</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Back to top knappen (visas endast när man scrollat ner) -->
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Tillbaka till toppen" type="button">
+    <svg viewBox="0 0 24 24">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+
+  <script>
+    /* ---- Visa / dölj beskrivning ---- */
+    function setOpen(item, open) {
+      item.querySelector('.item__detail').classList.toggle('is-open', open);
+      item.querySelector('.item__square').setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    document.querySelectorAll('.item').forEach(item => {
+      const square = item.querySelector('.item__square');
+      const less = item.querySelector('.item__less');
+
+      const meta = item.querySelector('.item__meta');
+
+      function toggle() {
+        setOpen(item, square.getAttribute('aria-expanded') !== 'true');
+      }
+
+      // Klick på rutan: öppna eller stäng
+      square.addEventListener('click', toggle);
+
+      // Klick på namn/år gör samma sak (tangentbordsvänligt med Enter/Mellanslag)
+      meta.setAttribute('role', 'button');
+      meta.setAttribute('tabindex', '0');
+      meta.addEventListener('click', toggle);
+      meta.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+
+      // "Show less": stäng och scrolla tillbaka till raden
+      less.addEventListener('click', () => {
+        setOpen(item, false);
+        square.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+
+    /* ---- Länk som work.html#hermind öppnar det projektet direkt ---- */
+    const hashItem = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+    if (hashItem && hashItem.classList.contains('item')) {
+      setOpen(hashItem, true);
+      requestAnimationFrame(() => hashItem.scrollIntoView({ block: 'start' }));
+    }
+
+    /* ---- Back to top-knapp logik ---- */
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    window.addEventListener('scroll', () => {
+      // Visas när man scrollat mer än en skärmhöjd
+      if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('is-visible');
+      } else {
+        scrollTopBtn.classList.remove('is-visible');
+      }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+
+  <script>
+    /* ---- Beskär bort tom kant (genomskinlig eller enfärgad) i projektbilderna,
+            så att alla bilder börjar vid sin synliga kant och följer rutornas högerkant ---- */
+    document.querySelectorAll('.project__media img').forEach(img => {
+      function trim() {
+        if (img.dataset.trimmed) return;
+        const w = img.naturalWidth, h = img.naturalHeight;
+        if (!w || !h) return;
+        try {
+          const c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          const g = c.getContext('2d', { willReadFrequently: true });
+          g.drawImage(img, 0, 0);
+          const d = g.getImageData(0, 0, w, h).data;
+
+          // Bakgrundsfärg = övre vänstra hörnet
+          const br = d[0], bg = d[1], bb = d[2], ba = d[3];
+          const TOL = 14;   // höj om en ljus kant blir kvar, sänk om motivet klipps
+
+          function isBg(i) {
+            if (d[i + 3] < 20) return true;                    // genomskinlig
+            if (ba < 20) return false;                         // hörnet var genomskinligt, bara alfa räknas
+            return Math.abs(d[i]     - br) < TOL &&
+                   Math.abs(d[i + 1] - bg) < TOL &&
+                   Math.abs(d[i + 2] - bb) < TOL;
+          }
+
+          let x0 = w, y0 = h, x1 = -1, y1 = -1;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              if (!isBg((y * w + x) * 4)) {
+                if (x < x0) x0 = x;
+                if (x > x1) x1 = x;
+                if (y < y0) y0 = y;
+                if (y > y1) y1 = y;
+              }
+            }
+          }
+          if (x1 < x0 || y1 < y0) return;
+
+          const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
+          img.dataset.trimmed = '1';
+          if (cw === w && ch === h) return;
+
+          const out = document.createElement('canvas');
+          out.width = cw; out.height = ch;
+          out.getContext('2d').drawImage(c, x0, y0, cw, ch, 0, 0, cw, ch);
+          out.toBlob(b => { if (b) img.src = URL.createObjectURL(b); });
+        } catch (e) {
+          /* t.ex. om sidan öppnas direkt som fil: visa bilden som den är */
+        }
+      }
+      if (img.complete) trim(); else img.addEventListener('load', trim, { once: true });
+    });
+  </script>
+
+  <script src="cursor.js"></script>
+
+</body>
+</html>

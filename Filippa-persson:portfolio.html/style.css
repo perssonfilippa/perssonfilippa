@@ -1,0 +1,113 @@
+/* Alla vikter av Plus Jakarta Sans laddas här, en gång för alla sidor */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap");
+
+:root {
+  --bg: #949139;
+  --text: #ECEDE9;
+  --sans-heavy: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Lora", Georgia, "Times New Roman", serif;
+  --sans-light: "Roboto", "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans-light);
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* ---------- Navigation ---------- */
+:root { --nav-color: #ECEDE9; }
+/* Tabbarens fontvikter: ändra bara här */
+:root {
+  --nav-weight: 400;          /* sidorna man inte är på */
+  --nav-weight-active: 800;   /* sidan man är på */
+}
+/* =====================================================================
+   NAVBAR – identisk på Home, Work och About (kopiera hela blocket
+   oförändrat till alla sidor). Bara färgen styrs per sida via
+   --nav-color.
+   ===================================================================== */
+html { overflow-y: scroll; }   /* alltid scrollist, så bredden är lika på alla sidor */
+
+.nav {
+  position: absolute !important;
+  top: 2vh !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin: 0 !important;
+  padding: 3vh 5vw !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: none !important;
+  font-family: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: var(--nav-weight) !important;
+  font-size: clamp(0.95rem, 1.6vw, 1.35rem) !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase !important;
+  z-index: 3;
+}
+
+.nav__right {
+  display: flex !important;
+  gap: 5.5vw !important;
+}
+
+.nav a,
+.nav a:link,
+.nav a:visited,
+.nav a:active {
+  color: var(--nav-color) !important;
+  font-family: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: var(--nav-weight) !important;
+  font-size: inherit !important;
+  line-height: 1.2 !important;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.nav a:hover { opacity: 0.6; }
+
+/* Sidan man är på: fetare istället för understruken */
+.nav a[aria-current="page"],
+.nav a.active {
+  font-weight: var(--nav-weight-active) !important;
+  text-decoration: none !important;
+}
+
+/* Extra stark regel: vinner även om en sida har kvar gammal navbar-CSS inline */
+html body .nav a[aria-current="page"],
+html body .nav a.active {
+  font-weight: var(--nav-weight-active) !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+}
+
+html body .nav a:not([aria-current="page"]):not(.active) {
+  font-weight: var(--nav-weight) !important;
+  text-decoration: none !important;
+}

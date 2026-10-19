@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#949139">
+
+  <title>About – Filippa Persson</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Lora:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,500&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+  :root { --nav-color: #ECEDE9; }
+
+  /* Navbaren (layout, vikt, aktiv länk) styrs av style.css och är lika på alla sidor. */
+
+    :root {
+      --bg: #949139;             /* bakgrund (grön) */
+      --heading: #ECEDE9;        /* About me + Contact */
+      --about-text: #ffffff;     /* brödtext */
+      --frame: #ffffff;          /* ram runt bilden */
+    }
+
+    body {
+      background: var(--bg);
+    }
+
+    /* =========================
+       LAYOUT
+       Vänster: bild + Contact. Höger: About me-texten.
+    ========================= */
+
+    .about {
+      display: grid;
+      grid-template-columns: minmax(0, 0.415fr) minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "photo   text"
+        "contact text";
+      column-gap: 2.9%;
+      align-items: start;
+
+      width: min(75vw, 1100px);
+      margin: 0 auto;
+      padding: 20vh 0 10vh;
+
+      font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* =========================
+       BILD
+    ========================= */
+
+    /* Ramen sitter på wrappern och följer därmed själva fotot:
+       scriptet längst ner beskär bort ev. genomskinlig kant i PNG-filen. */
+    .about__photo-wrap {
+      grid-area: photo;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 256 / 332;
+      border: 4px solid var(--frame);   /* vit ram, stroke 4 */
+      overflow: hidden;
+
+      /* ---- Justera beskärningen av fotot i ramen ----
+         --photo-x : 0 = visa vänsterkanten, 50 = mitten, 100 = högerkanten
+         --photo-y : 0 = visa överkanten,   50 = mitten, 100 = nederkanten
+         --photo-zoom : 1 = fyller ramen precis, 1.2 = 20 % inzoomad osv. */
+      --photo-x: 50;
+      --photo-y: 50;
+      --photo-zoom: 1;
+    }
+
+    .about__photo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      max-width: none;
+      width: 100%;                      /* justeras av scriptet */
+      height: auto;
+    }
+
+    /* =========================
+       CONTACT
+    ========================= */
+
+    .about__contact {
+      grid-area: contact;
+      margin-top: 1.3rem;
+    }
+
+    .about__contact-title {
+      margin: 0 0 0.3rem;
+      color: var(--heading);
+      font-family: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+      line-height: 1.3;
+    }
+
+    .about__contact a {
+      display: block;
+      width: max-content;
+      color: var(--heading);
+      font-weight: 500;
+      font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+      line-height: 1.4;
+      text-decoration: none;
+      transition: opacity .2s ease;
+    }
+
+    .about__contact a:hover,
+    .about__contact a:focus-visible {
+      opacity: .55;
+    }
+
+    .about__contact a:focus-visible {
+      outline: 2px solid var(--heading);
+      outline-offset: 3px;
+    }
+
+    /* =========================
+       TEXT
+    ========================= */
+
+    .about__text {
+      grid-area: text;
+    }
+
+    .about__heading {
+      margin: 0 0 0.5rem;
+      color: var(--heading);
+      font-family: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+      line-height: 1.3;
+    }
+
+    .about__text p {
+      margin: 0 0 1.25em;
+      max-width: 40rem;
+      color: var(--about-text);
+      font-weight: 300;
+      font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+      line-height: 1.4;
+    }
+
+    /* =========================
+       HALVSKÄRM / SURFPLATTA
+    ========================= */
+
+    @media (max-width: 900px) {
+      .about {
+        width: 84vw;
+      }
+    }
+
+    /* =========================
+       HALVSKÄRM: bilden till höger, texten radbryter runt den
+       och börjar på samma höjd som bildens överkant
+    ========================= */
+
+    @media (min-width: 520px) and (max-width: 900px) {
+      .about {
+        display: block;            /* släpper griden så texten kan flyta runt bilden */
+        width: 84vw;
+        padding: 16vh 0 8vh;
+      }
+
+      .about__photo-wrap {
+        float: right;
+        width: 40%;                /* bildens bredd, justera här */
+        margin: 0 0 1.5rem 2rem;   /* luft mot texten (vänster) och under bilden */
+      }
+
+      .about__text p {
+        max-width: none;           /* låt texten fylla hela bredden bredvid bilden */
+      }
+
+      .about__contact {
+        clear: both;               /* Contact hamnar alltid under både text och bild */
+        margin-top: 2rem;
+      }
+    }
+
+    /* =========================
+       MOBIL: bild, text, sist Contact
+    ========================= */
+
+    @media (max-width: 519px) {
+      .about {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        grid-template-areas:
+          "photo"
+          "text"
+          "contact";
+        row-gap: 2rem;
+        width: 88vw;
+        padding: 16vh 0 8vh;
+      }
+
+      .about__photo-wrap {
+        width: min(100%, 22rem);
+      }
+
+      .about__contact {
+        margin-top: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .about__contact a { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       NAVIGATION
+  ========================= -->
+
+  <nav class="nav" aria-label="Huvudmeny">
+    <a href="index.html">Home</a>
+
+    <div class="nav__right">
+      <a href="work.html">Work</a>
+      <a href="about.html" aria-current="page">About</a>
+    </div>
+  </nav>
+
+
+  <!-- =========================
+       ABOUT
+  ========================= -->
+
+  <main class="about">
+
+    <div class="about__photo-wrap">
+      <img
+        class="about__photo"
+        src="Portratt.png"
+        alt="Porträtt av Filippa Persson"
+      >
+    </div>
+
+    <section class="about__text">
+      <h1 class="about__heading">About me</h1>
+
+      <p>
+        I’m Filippa Persson, a 23 year old Interaction Design student at
+        Stockholm University. Born in Gothenburg, now based in Stockholm.
+      </p>
+
+      <p>
+        I’ve always been drawn to the creative side of things and today
+        that passion has found its place in my studies and work. I’m
+        particularly interested in colour, typography, form, imagery
+        and composition, and how these elements come together to create
+        a strong visual identity. I love creating experiences that not
+        only work well, but also feel cohesive, considered and exciting.
+      </p>
+
+      <p>
+        Through my studies, I have gained experience working across the
+        entire design process, from exploring problems and developing
+        concepts to creating prototypes and user-centered designs. While
+        I’m particularly drawn to UI and visual design, I believe that
+        great design is more than just how something looks. Without a
+        thoughtful user experience, even strong visual design can lose
+        its purpose and impact. I’m a creative person, a problem solver
+        and a bit of a doer. I enjoy working with others, throwing around
+        ideas and bringing them to life, but I’m also happy taking the
+        lead and getting things done. I like structure, I like creating,
+        and I love seeing an idea turn into something real.
+      </p>
+
+      <p>
+        Beyond digital design, you’ll find me taking photos, editing
+        videos or exploring graphic design and other creative projects
+        for fun.
+      </p>
+
+      <p>
+        Let’s turn ideas into something real!
+      </p>
+    </section>
+
+    <aside class="about__contact">
+      <h2 class="about__contact-title">Contact</h2>
+      <a href="mailto:filippa.per@gmail.com">Mail</a>
+      <a href="https://www.linkedin.com/in/persson-filippa" target="_blank" rel="noopener">Linkedin</a>
+    </aside>
+
+  </main>
+
+  <script>
+    // Fyller ramen med själva fotot (utan genomskinlig kant i PNG-filen),
+    // beskuret till ramens proportioner (256:332), centrerat.
+    const wrapEl  = document.querySelector('.about__photo-wrap');
+    const photoEl = document.querySelector('.about__photo');
+    let frame = null;   // fotots område i bilden
+
+    function findFrame() {
+      const w = photoEl.naturalWidth, h = photoEl.naturalHeight;
+      if (!w || !h) return;
+      try {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const g = c.getContext('2d', { willReadFrequently: true });
+        g.drawImage(photoEl, 0, 0);
+        const d = g.getImageData(0, 0, w, h).data;
+        let x0 = w, y0 = h, x1 = -1, y1 = -1;
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            if (d[(y * w + x) * 4 + 3] > 20) {
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
+          }
+        }
+        if (x1 >= x0 && y1 >= y0) frame = { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+      } catch (e) {
+        frame = null;   // t.ex. om sidan öppnas direkt som fil: visa hela bilden
+      }
+    }
+
+    function layoutPhoto() {
+      const nw = photoEl.naturalWidth, nh = photoEl.naturalHeight;
+      if (!nw || !nh) return;
+      const f  = frame || { x: 0, y: 0, w: nw, h: nh };
+      const bw = wrapEl.clientWidth, bh = wrapEl.clientHeight;   // innanför ramen
+      const cs = getComputedStyle(wrapEl);
+      const px   = (parseFloat(cs.getPropertyValue('--photo-x')) || 50) / 100;
+      const py   = (parseFloat(cs.getPropertyValue('--photo-y')) || 50) / 100;
+      const zoom = Math.max(1, parseFloat(cs.getPropertyValue('--photo-zoom')) || 1);
+
+      const k = Math.max(bw / f.w, bh / f.h) * zoom;               // "cover" + zoom
+      photoEl.style.width = (nw * k) + 'px';
+      photoEl.style.left  = (-f.x * k + (bw - f.w * k) * px) + 'px';
+      photoEl.style.top   = (-f.y * k + (bh - f.h * k) * py) + 'px';
+    }
+
+    function onPhoto() { findFrame(); layoutPhoto(); }
+
+    if (photoEl.complete) onPhoto(); else photoEl.addEventListener('load', onPhoto);
+    new ResizeObserver(layoutPhoto).observe(wrapEl);
+    window.addEventListener('resize', layoutPhoto);
+  </script>
+
+  <script src="cursor.js"></script>
+
+</body>
+</html>
